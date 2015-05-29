@@ -1,0 +1,38 @@
+#!/system/bin/sh
+#
+# record the temp
+#
+#
+top_dir=/data/ktests
+tmp_dir=$top_dir/record/
+
+#Source the PATH variable
+#. $top_dir/.bashrc
+
+#recorded temp Path
+sys_cpufreq=/sys/devices/system/cpu/cpu0/cpufreq
+current_cpufreq=$sys_cpufreq/scaling_cur_freq
+gpu_freq=/proc/gpufreq/gpufreq_var_dump
+cpu_big=/proc/cpufreq/MT_CPU_DVFS_BIG/cpufreq_freq
+cpu_little=/proc/cpufreq/MT_CPU_DVFS_LITTLE/cpufreq_freq
+battery_temp=/sys/devices/platform/battery/power_supply/battery/batt_temp
+cpu_temp=/sys/class/thermal/thermal_zone1/temp
+cpu_online=/sys/devices/system/cpu/online
+
+cycle=$1
+[ -z "$cycle" ] && cycle=0.5
+
+while :;
+do
+	cpufreq=`cat $current_cpufreq`
+	cpuonline=`cat $cpu_online`
+	cpubig=`cat $cpu_big`
+	cpulittle=`cat $cpu_little`
+	cpuTemp=`cat $cpu_temp`
+	gpuFreq=`cat $gpu_freq | grep mt_gpufreq_dvfs_get_gpu_freq`
+	cpuload=`cat /proc/hps/cpu_load`
+	echo "cpufreq: $cpufreq, cpuload: $cpuload, cpuon: $cpuonline, cputemp: $cpuTemp, cpu_big: $cpubig, cpu_little: $cpulittle, gpuFreq: $gpuFreq" 
+	sleep $cycle
+done
+
+exit 1
