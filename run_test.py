@@ -1,25 +1,32 @@
 #!/bin/bash
-adb -s A10ABL24QYQV root
+
+dev_name="123456789ABC"
+
+if [ -n "$dev_name" ]; then
+	adb -s $dev_name root
+else
+	adb root
+fi
+
 sleep 5
-#adb -s A10ABL24QYQV remount
-#sleep 5
-
-#adb -s A10ABL24QYQV push iozone64 /system/bin
-#adb -s A10ABL24QYQV shell chmod 777 /system/bin/iozone64
-
-#excel_name="/data/Iozone"
 
 declare -i i=0
+
 while ((i < 10000))
 do
-	#echo $i
 	let ++i
-	#writename=$excel_name$i".xls"
-	#adb -s A10ABL24QYQV shell iozone64 -I -s 11g -i0  -f /data/iozonetest -Rb $writename
-	adb -s A10ABL24QYQV shell dd if=/dev/zero of=/data/test bs=1m count=11264
-        adb -s A10ABL24QYQV shell df |grep data
-	
-	extcsd=`adb -s A10ABL24QYQV shell cat /sys/kernel/debug/mmc0/mmc0:0001/ext_csd`
+	if [ -n "$dev_name" ]; then
+		adb -s $dev_name shell dd if=/dev/zero of=/data/test bs=1m count=112
+		adb -s $dev_name shell df |grep data
+
+		extcsd=`adb -s A10ABL24QYQV shell cat /sys/kernel/debug/mmc0/mmc0:0001/ext_csd`
+	else
+		adb shell dd if=/dev/zero of=/data/test bs=1m count=11264
+		echo ""
+		adb shell df |grep data
+
+		extcsd=`adb shell cat /sys/kernel/debug/mmc0/mmc0:0001/ext_csd`
+	fi
 
         size_w=`expr $i \* 11`
         echo "Run times $i, have write size $size_w GB.\n"
