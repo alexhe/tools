@@ -1,5 +1,8 @@
 #!/bin/bash
 
+ROOT_DIR=$(pwd)
+TMP_FILE=$ROOT_DIR"/tmp.txt"
+
 function adb_root()
 {
 	dev_name=
@@ -81,5 +84,22 @@ function emmc_health_test()
 	done
 }
 
-echo `get_data_free_size '0123456789ABCDEF'`
+function args_write()
+{
+	echo $1":"$2 >$TMP_FILE
+}
+
+function args_get()
+{
+        awk -F ":" '{print $1 $2}' $ROOT_DIR"/tmp.txt"
+}
+
+for dev in `adb devices |grep -E "device\>" |awk '{print $1}'`
+do
+	get_data_free_size $dev
+	size=$?
+	args_write $dev $size
+
+	args_get
+done
 
