@@ -1,47 +1,84 @@
 #!/bin/bash
 
-dev_name=
+function adb_root()
+{
+	dev_name=
 
-if [ -n "$1" ];	then
-	dev_name=$1 
-fi
-
-if [ -n "$dev_name" ]; then
-	adb -s $dev_name root
-else
-	adb root
-fi
-
-sleep 5
-
-declare -i i=0
-
-while ((i < 10000))
-do
-	let ++i
-	if [ -n "$dev_name" ]; then
-		adb -s $dev_name shell dd if=/dev/zero of=/data/test bs=1m count=112
-		echo ""
-		adb -s $dev_name shell df |grep data
-
-		extcsd=`adb -s $dev_name shell cat /sys/kernel/debug/mmc0/mmc0:0001/ext_csd`
-	else
-		adb shell dd if=/dev/zero of=/data/test bs=1m count=11264
-		echo ""
-		adb shell df |grep data
-
-		extcsd=`adb shell cat /sys/kernel/debug/mmc0/mmc0:0001/ext_csd`
+	if [ -n "$1" ]; then
+        	dev_name=$1
 	fi
 
-        size_w=`expr $i \* 11`
-        echo "Run times $i, have write size $size_w GB.\n"
-        echo "LIFE_A_SLC:"${extcsd:536:2}
-        echo ""
-        echo "LIFE_B_TLC:"${extcsd:538:2}
+	if [ -n "$dev_name" ]; then
+        	adb -s $dev_name root
+	else
+        	adb root
+	fi
+}
 
-	val=`expr $i % 10`
-        if [ $val==0 ]
-        then
-                sleep 10
+function get_data_free_size()
+{
+	dev_name=
+	data_size=
+
+        if [ -n "$1" ]; then
+                dev_name=$1
         fi
-done
+	
+	if [ -n "$dev_name" ]; then
+                data_size=`adb -s $dev_name shell df |grep data |awk '{print $4}'`
+        else
+                data_size=`adb shell df |grep data  |awk '{print $4}'`
+        fi
+	#return is 25.4G,need cut down.
+	return $((${data_size:0:2}/1))
+}
+
+function emmc_health_test()
+{
+	i=0
+	dev_name=
+	#16GB eMMC userdata free size 11G+ 
+	#32GB eMMC userdata free size 25G+
+	target_size=11
+
+	if [ -n "$1" ]; then
+		dev_name=$1
+	fi
+
+	if [ -n "$2" ]; then
+                target_size=$2
+		count=`expr $2 \* 1024`
+        fi
+
+	while ((i < 10000))
+	do
+		let ++i
+		if [ -n "$dev_name" ]; then
+			adb -s $dev_name shell dd if=/dev/zero of=/data/test bs=1m count=$count
+			echo ""
+
+			extcsd=`adb -s $dev_name shell cat /sys/kernel/debug/mmc0/mmc0:0001/ext_csd`
+		else
+			adb shell dd if=/dev/zero of=/data/test bs=1m count=count
+			echo ""
+
+			extcsd=`adb shell cat /sys/kernel/debug/mmc0/mmc0:0001/ext_csd`
+		fi
+		
+        	size_w=`expr $i \* $target_size`
+	        echo "Run times $i, have write size $size_w GB.\n"
+        	echo "LIFE_A_SLC:"${extcsd:536:2}
+        	echo ""
+       		echo "LIFE_B_TLC:"${extcsd:538:2}
+
+		#sleep 10s after write 100GB +  
+		val=`expr $i % 100` 
+        	if [ $val==0 ]
+        	then
+                	sleep 10
+        	fi
+	done
+}
+
+echo `get_data_free_size '0123456789ABCDEF'`
+
