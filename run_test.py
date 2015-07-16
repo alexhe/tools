@@ -1,6 +1,10 @@
 #!/bin/bash
 
-dev_name="123456789ABC"
+dev_name=
+
+if [ -n "$1" ];	then
+	dev_name=$1 
+fi
 
 if [ -n "$dev_name" ]; then
 	adb -s $dev_name root
@@ -17,9 +21,10 @@ do
 	let ++i
 	if [ -n "$dev_name" ]; then
 		adb -s $dev_name shell dd if=/dev/zero of=/data/test bs=1m count=112
+		echo ""
 		adb -s $dev_name shell df |grep data
 
-		extcsd=`adb -s A10ABL24QYQV shell cat /sys/kernel/debug/mmc0/mmc0:0001/ext_csd`
+		extcsd=`adb -s $dev_name shell cat /sys/kernel/debug/mmc0/mmc0:0001/ext_csd`
 	else
 		adb shell dd if=/dev/zero of=/data/test bs=1m count=11264
 		echo ""
