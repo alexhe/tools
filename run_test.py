@@ -29,8 +29,9 @@ function get_data_free_size()
         else
                 data_size=`adb shell df |grep data  |awk '{print $4}'`
         fi
-	#return is 25.4G,need cut down.
-	return $((${data_size:0:2}/1))
+	# return is 25.4G,need cut down.
+	# user (()) change str2int.
+	return $((${data_size:0:2}))
 }
 
 function emmc_health_test()
