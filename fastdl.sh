@@ -1,4 +1,5 @@
 OUTDIR=$1
+ISREBOOT=$2
 
 CMD='fastboot flash'
 
@@ -14,4 +15,6 @@ $CMD system $OUTDIR/system.img
 $CMD cache $OUTDIR/cache.img
 $CMD userdata $OUTDIR/userdata.img
 
-fastboot reboot 
+if [ $ISREBOOT ] then
+	fastboot reboot 
+endif
