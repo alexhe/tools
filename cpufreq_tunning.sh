@@ -58,7 +58,7 @@ dump_params() {
 
 dump_setting() {
 #write parms to node
-	echo "Get Little cpu freq paras."
+	echo "========= Little:==========="
 	echo "/sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads" && adb shell "cat /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads"
 	echo "/sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time" && adb shell "cat /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time"
 	echo "/sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq" && adb shell "cat /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq"
@@ -69,7 +69,7 @@ dump_setting() {
 	echo "/sys/devices/system/cpu/cpu0/cpufreq/interactive/boostpulse_duration" && adb shell "cat /sys/devices/system/cpu/cpu0/cpufreq/interactive/boostpulse_duration"
 
 	#set big cpu parms
-	echo "Get BIG cpu freq paras."
+	echo "=========== BIG: ==========="
 	echo "/sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads" && adb shell "cat /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads"
         echo "/sys/devices/system/cpu/cpu4/cpufreq/interactive/min_sample_time" && adb shell "cat /sys/devices/system/cpu/cpu4/cpufreq/interactive/min_sample_time"
         echo "/sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq" && adb shell "cat /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq"
@@ -112,6 +112,10 @@ done
 
 [ ! -z $DEBUG ] && dump_params
 
+#make sure adb run as root
+adb root
+sleep 2
+
 #make sure cpu4 is online
 echo "Disable HPS and on CPU4."
 adb shell "echo 0 >/sys/power/hps_enabled"
@@ -119,7 +123,8 @@ sleep 5
 adb shell "echo 1 > /sys/devices/system/cpu/cpu4/online"
 
 #write parms to node
-echo "Set Little cpu freq paras."
+echo " "
+echo "Set Little cpu freq paras ... "
 adb shell "echo $TARGET_LOADS_L >/sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads"
 adb shell "echo $MIN_SIMPLE_TIME_L >/sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time"
 adb shell "echo $HISPEED_FREQ_L >/sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq"
@@ -130,7 +135,8 @@ adb shell "echo $TIMER_SLACK_L >/sys/devices/system/cpu/cpu0/cpufreq/interactive
 adb shell "echo $BOOSTPULSE_DURATION_L >/sys/devices/system/cpu/cpu0/cpufreq/interactive/boostpulse_duration"
 
 #set big cpu parms
-echo "Set BIG cpu freq paras."
+echo " "
+echo "Set BIG cpu freq paras ...."
 adb shell "echo $TARGET_LOADS_B >/sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads"
 adb shell "echo $MIN_SIMPLE_TIME_B >/sys/devices/system/cpu/cpu4/cpufreq/interactive/min_sample_time"
 adb shell "echo $HISPEED_FREQ_B >/sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq"
@@ -141,13 +147,16 @@ adb shell "echo $TIMER_SLACK_B >/sys/devices/system/cpu/cpu4/cpufreq/interactive
 adb shell "echo $BOOSTPULSE_DURATION_B >/sys/devices/system/cpu/cpu4/cpufreq/interactive/boostpulse_duration"
 
 if [ ! -z $DEBUG ]; then 
-    echo "Read and dump cpufreq params"
+    echo " "
+    echo "Read and Dump CPUFREQ Params:"
     dump_setting
 fi
 
 #enable hps
-echo "Enable HPS."
+echo " "
+echo "Enable HPS ... "
 adb shell "echo 1 >/sys/power/hps_enabled"
 sleep 5
 
+echo " "
 echo "CPUfreq Params set success!"
