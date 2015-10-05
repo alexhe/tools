@@ -1,0 +1,7 @@
+com.mediatek.mtklogger
+com.android.development
+com.mediatek.oobe
+com.android.apr
+com.yunos.monkeytest
+com.alibaba.android.security.activity
+com.snkplaymore.kk909
