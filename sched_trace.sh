@@ -16,7 +16,7 @@ SCHED_EVENT_7=$SCHED_EVENT/sched_rq_runnable_load
 SCHED_EVENT_8=$SCHED_EVENT/sched_rq_runnable_ratio
 
 HPS_EVENT=$EVENT_PATH/hotplug
-FREQ_EVENT=$EVENT_PATH/power/cpu_frequency
+FREQ_EVENT=$EVENT_PATH/cpufreq_interactive
 IDLE_EVENT=$EVENT_PATH/power/cpu_idle
 
 if [ ! -z $1 ]; then
