@@ -14,6 +14,7 @@ SCHED_EVENT_5=$SCHED_EVENT/sched_hmp_migrate
 SCHED_EVENT_6=$SCHED_EVENT/sched_task_load_contrib
 SCHED_EVENT_7=$SCHED_EVENT/sched_rq_runnable_load
 SCHED_EVENT_8=$SCHED_EVENT/sched_rq_runnable_ratio
+SCHED_EVENT_9=$SCHED_EVENT/sched_task_runnable_ratio
 
 HPS_EVENT=$EVENT_PATH/hotplug
 FREQ_EVENT=$EVENT_PATH/cpufreq_interactive
@@ -44,6 +45,7 @@ adb shell "echo 1 > $SCHED_EVENT_4/enable"
 #adb shell "echo 1 > $SCHED_EVENT_6/enable"
 adb shell "echo 1 > $SCHED_EVENT_7/enable"
 adb shell "echo 1 > $SCHED_EVENT_8/enable"
+adb shell "echo 1 > $SCHED_EVENT_9/enable"
 
 adb shell "echo 1 > $HPS_EVENT/enable"
 adb shell "echo 1 > $FREQ_EVENT/enable"
