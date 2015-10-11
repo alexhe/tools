@@ -3,20 +3,20 @@
 DEBUG=1
 
 #DEF TEST VALUE
-TARGET_LOADS_L='75 800000:85 1100000:95'
-TARGET_LOADS_B='80 1000000:81 1400000:87 1700000:90'
+TARGET_LOADS_L='75'
+TARGET_LOADS_B='60 1700000:85'
 
 MIN_SIMPLE_TIME_L=40000
-MIN_SIMPLE_TIME_B=40000
+MIN_SIMPLE_TIME_B=40000 1500000:60000
 
-HISPEED_FREQ_L=800000
-HISPEED_FREQ_B=1000000
+HISPEED_FREQ_L=1500000
+HISPEED_FREQ_B=1500000
 
-GO_HISPEED_LOAD_L=85
-GO_HISPEED_LOAD_B=89
+GO_HISPEED_LOAD_L=99
+GO_HISPEED_LOAD_B=99
 
-ABOVE_HISPEED_DELAY_L='19000 1000000:39000'
-ABOVE_HISPEED_DELAY_B='59000 1200000:119000 1700000:19000'
+ABOVE_HISPEED_DELAY_L='19000'
+ABOVE_HISPEED_DELAY_B='19000 1700000:39000'
 
 TIMER_RATE_L=20000
 TIMER_RATE_B=20000
@@ -28,13 +28,15 @@ BOOSTPULSE_DURATION_L=40000
 BOOSTPULSE_DURATION_B=40000
 
 usage() {
-    echo "Usage: $1: [-lL target_loads][-gG go_hispeed_load] [-fF hispeed_freq] [-aA above_hispeed_delay] [-bB boostpulse_duration]" 
+    echo "Usage: $1: [-lL target_loads][-gG go_hispeed_load] [-fF hispeed_freq] [-mM min_sample_time] [-aA above_hispeed_delay] [-bB boostpulse_duration]" 
     echo "  -l  TARGET_LOADS_L"
     echo "  -L  TARGET_LOADS_B"
     echo "  -g  GO_HISPEED_LOAD_L"
     echo "  -G  GO_HISPEED_LOAD_B"
     echo "  -f  HISPEED_FREQ_L"
     echo "  -F  HISPEED_FREQ_B"
+    echo "  -m  MIN_SIMPLE_TIME_L"
+    echo "  -M  MIN_SIMPLE_TIME_B"
     echo "  -a  ABOVE_HISPEED_DELAY_L"
     echo "  -A  ABOVE_HISPEED_DELAY_B"
     echo "  -b  BOOSTPULSE_DURATION_L"
@@ -50,6 +52,8 @@ dump_params() {
     echo "  GO_HISPEED_LOAD_B	$GO_HISPEED_LOAD_B"
     echo "  HISPEED_FREQ_L	$HISPEED_FREQ_L"
     echo "  HISPEED_FREQ_B	$HISPEED_FREQ_B"
+    echo "  MIN_SIMPLE_TIME_L 	$MIN_SIMPLE_TIME_L"
+    echo "  MIN_SIMPLE_TIME_B	$MIN_SIMPLE_TIME_B"
     echo "  ABOVE_HISPEED_DELAY_L	$ABOVE_HISPEED_DELAY_L"
     echo "  ABOVE_HISPEED_DELAY_B	$ABOVE_HISPEED_DELAY_B"
     echo "  BOOSTPULSE_DURATION_L	$BOOSTPULSE_DURATION_L"
@@ -81,7 +85,7 @@ dump_setting() {
 
 }
 
-while getopts "l:L:g:G:f:F:a:A:b:B:h" arg
+while getopts "l:L:g:G:f:F:m:M:a:A:b:B:h" arg
 do
     case $arg in
         l)  TARGET_LOADS_L=$OPTARG;;
@@ -90,6 +94,8 @@ do
         G)  GO_HISPEED_LOAD_B=$OPTARG;;
         f)  HISPEED_FREQ_L=$OPTARG;;
         F)  HISPEED_FREQ_B=$OPTARG;;
+	m)  MIN_SIMPLE_TIME_L=$OPTARG;;
+        M)  MIN_SIMPLE_TIME_B=$OPTARG;;
         a)  ABOVE_HISPEED_DELAY_L=$OPTARG;;
         A)  ABOVE_HISPEED_DELAY_B=$OPTARG;;
         b)  BOOSTPULSE_DURATION_L=$OPTARG;;
@@ -104,6 +110,8 @@ done
 [ -z "$GO_HISPEED_LOAD_B" ] && usage $0
 [ -z "$HISPEED_FREQ_L" ] && usage $0
 [ -z "$HISPEED_FREQ_B" ] && usage $0
+[ -z "$MIN_SIMPLE_TIME_L" ] && usage $0
+[ -z "$MIN_SIMPLE_TIME_B" ] && usage $0
 [ -z "$ABOVE_HISPEED_DELAY_L" ] && usage $0
 [ -z "$ABOVE_HISPEED_DELAY_B" ] && usage $0
 [ -z "$BOOSTPULSE_DURATION_L" ] && usage $0
