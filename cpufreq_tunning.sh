@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DEBUG=1
+DEBUG=0
 
 #DEF TEST VALUE
 TARGET_LOADS_L='75'
