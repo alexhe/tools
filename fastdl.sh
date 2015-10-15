@@ -15,6 +15,6 @@ $CMD system $OUTDIR/system.img
 $CMD cache $OUTDIR/cache.img
 $CMD userdata $OUTDIR/userdata.img
 
-if [ $ISREBOOT ] then
+if [ -n "$ISREBOOT" ]; then
 	fastboot reboot 
-endif
+fi
