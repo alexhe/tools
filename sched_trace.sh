@@ -20,11 +20,33 @@ HPS_EVENT=$EVENT_PATH/hotplug
 FREQ_EVENT=$EVENT_PATH/cpufreq_interactive
 IDLE_EVENT=$EVENT_PATH/power/cpu_idle
 
+function trace_onoff_event()
+{
+	#echo "Start sched event ..."
+	adb shell "echo $1 > $SCHED_EVENT_1/enable"
+	#adb shell "echo $1 > $SCHED_EVENT_2/enable"
+	adb shell "echo $1 > $SCHED_EVENT_3/enable"
+	adb shell "echo $1 > $SCHED_EVENT_4/enable"
+	#adb shell "echo $1 > $SCHED_EVENT_5/enable"
+	#adb shell "echo $1 > $SCHED_EVENT_6/enable"
+	adb shell "echo $1 > $SCHED_EVENT_7/enable"
+	adb shell "echo $1 > $SCHED_EVENT_8/enable"
+	adb shell "echo $1 > $SCHED_EVENT_9/enable"
+
+	adb shell "echo $1 > $HPS_EVENT/enable"
+	adb shell "echo $1 > $FREQ_EVENT/enable"
+	adb shell "echo $1 > $IDLE_EVENT/enable"
+}
+
 if [ ! -z $1 ]; then
 	TIMEOUT=$1
 else
 	TIMEOUT=120
 fi
+
+# root
+adb root
+sleep 5
 
 # clear trace
 echo "Clear ..."
@@ -37,20 +59,8 @@ adb shell "echo 40960 >$TRACE_PATH/buffer_total_size_kb"
 
 # enable sched event
 echo "Start sched event ..."
-adb shell "echo 1 > $SCHED_EVENT_1/enable"
-#adb shell "echo 1 > $SCHED_EVENT_2/enable"
-adb shell "echo 1 > $SCHED_EVENT_3/enable"
-adb shell "echo 1 > $SCHED_EVENT_4/enable"
-#adb shell "echo 1 > $SCHED_EVENT_5/enable"
-#adb shell "echo 1 > $SCHED_EVENT_6/enable"
-adb shell "echo 1 > $SCHED_EVENT_7/enable"
-adb shell "echo 1 > $SCHED_EVENT_8/enable"
-adb shell "echo 1 > $SCHED_EVENT_9/enable"
 
-adb shell "echo 1 > $HPS_EVENT/enable"
-adb shell "echo 1 > $FREQ_EVENT/enable"
-adb shell "echo 1 > $IDLE_EVENT/enable"
-
+trace_onoff_event 1
 adb shell "echo 1 > $TRACE_PATH/tracing_on"
 
 echo
@@ -72,6 +82,8 @@ echo "Tracing OFF, Please Wait to get trace file ..."
 echo
 
 adb shell "echo 0 > $TRACE_PATH/tracing_on"
+trace_onoff_event 1
+
 adb pull $TRACE_PATH/trace ./
 
 sleep 1 
