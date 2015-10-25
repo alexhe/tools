@@ -52,7 +52,7 @@ do
 			((big_num++))
 		fi
 		if [ $online -eq 1 -a $freq_big -eq 0 ]; then
-			freq_big_path=`echo /sys/devices/system/cpu/cpu$i/cpufreq/cpuinfo_cur_freq`
+			freq_big_path=`echo /sys/devices/system/cpu/cpu$i/cpufreq/scaling_cur_freq`
 			#load_big_path=`echo /sys/bus/cpu/devices/cpu$i/cpufreq/interactive/cpu_util`
 			[ -f $freq_big_path ] && freq_big=`cat $freq_big_path`
 			#[ -f $load_big_path ] && load_big=`cat $load_big_path`
